@@ -1,16 +1,43 @@
+# Freelance SaaS — Invoice & Client Manager
 
-C:\Users\mrtzr\Projects\freelance-saas>git remote add origin https://github.com/MuratZrl/freelance-saas.git
+A production-ready REST API for freelancers to manage clients and invoices.
 
-C:\Users\mrtzr\Projects\freelance-saas>git push -u origin master
-Enumerating objects: 47, done.
-Counting objects: 100% (47/47), done.
-Delta compression using up to 16 threads
-Compressing objects: 100% (45/45), done.
-Writing objects: 100% (47/47), 107.07 KiB | 8.92 MiB/s, done.
-Total 47 (delta 3), reused 0 (delta 0), pack-reused 0 (from 0)
-remote: Resolving deltas: 100% (3/3), done.
-To https://github.com/MuratZrl/freelance-saas.git
- * [new branch]      master -> master
-branch 'master' set up to track 'origin/master'.
+## Tech Stack
 
-C:\Users\mrtzr\Projects\freelance-saas>
+- **Framework:** NestJS + TypeScript
+- **Database:** PostgreSQL (Docker)
+- **ORM:** TypeORM
+- **Auth:** JWT + Passport
+- **Docs:** Swagger UI
+
+## Features
+
+- JWT authentication (register/login)
+- Client management (CRUD)
+- Invoice management with line items, tax and discount calculation
+- Dashboard stats (total revenue, paid, pending, overdue)
+- Auto-generated invoice numbers
+- Input validation with class-validator
+- Swagger API docs at `/api`
+
+## Running Locally
+```bash
+docker-compose up -d
+npm install
+npm run start:dev
+```
+
+## Environment Variables
+```env
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USER=postgres
+DATABASE_PASSWORD=postgres
+DATABASE_NAME=freelance_saas
+JWT_SECRET=your_secret
+JWT_EXPIRES_IN=7d
+```
+
+## API Docs
+
+Visit `http://localhost:3000/api` for interactive Swagger docs.
