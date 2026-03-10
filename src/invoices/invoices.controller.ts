@@ -1,8 +1,9 @@
-// src/invoices/invoices.controller.ts
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request, Res } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import type { Response } from 'express';
 import { InvoicesService } from './invoices.service';
+import { PdfService } from './pdf.service';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { InvoiceStatus } from './invoice.entity';
 
@@ -11,7 +12,10 @@ import { InvoiceStatus } from './invoice.entity';
 @Controller('invoices')
 @UseGuards(AuthGuard('jwt'))
 export class InvoicesController {
-  constructor(private invoicesService: InvoicesService) {}
+  constructor(
+    private invoicesService: InvoicesService,
+    private pdfService: PdfService,
+  ) {}
 
   @Post()
   create(@Body() dto: CreateInvoiceDto, @Request() req) {
@@ -26,6 +30,18 @@ export class InvoicesController {
   @Get('stats')
   getStats(@Request() req) {
     return this.invoicesService.getDashboardStats(req.user.id);
+  }
+
+  @Get(':id/pdf')
+  async downloadPdf(@Param('id') id: string, @Request() req, @Res() res: Response) {
+    const invoice = await this.invoicesService.findOne(id, req.user.id);
+    const buffer = await this.pdfService.generateInvoicePdf(invoice);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="invoice-${invoice.invoiceNumber}.pdf"`,
+      'Content-Length': buffer.length,
+    });
+    res.end(buffer);
   }
 
   @Get(':id')
